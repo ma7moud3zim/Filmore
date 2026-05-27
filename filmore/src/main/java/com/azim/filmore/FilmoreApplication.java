@@ -8,6 +8,7 @@ public class FilmoreApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FilmoreApplication.class, args);
+		System.out.println("Working");
 	}
 
 }
