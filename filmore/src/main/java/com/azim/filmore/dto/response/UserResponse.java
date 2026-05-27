@@ -2,6 +2,8 @@ package com.azim.filmore.dto.response;
 
 import java.time.Instant;
 
+import com.azim.filmore.entity.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
+	
 	private Long id;
 	private String email;
 	private String fullName;
@@ -17,4 +20,17 @@ public class UserResponse {
 	private Boolean active;
 	private Instant createdAt;
 	private Instant updatedAt;
+	
+	public static UserResponse fromEntity(User user) {
+		return new UserResponse(
+				user.getId(),
+				user.getEmail(),
+				user.getFullName(),
+				user.getRole().name(),
+				user.isActive(),
+				user.getCreatedAt(),
+				user.getUpdatedAt()
+		);
+	}
+	
 }

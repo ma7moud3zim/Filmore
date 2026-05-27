@@ -21,7 +21,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import jdk.jfr.TransitionFrom;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -93,25 +92,6 @@ public class Video {
 		}
 		return null;
 	}
-	
-	@Transient
-	@JsonProperty("isLiked")
-	private Boolean isLiked = false;
-	
-	@Transient
-	@JsonProperty("isDisliked")
-	private Boolean isDisliked = false;
-	
-	@JsonIgnore
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "video-likes" , joinColumns = @JoinColumn(name = "video_id"))
-	private List<String> likes = new ArrayList<>();
-	
-	@JsonIgnore
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "video-dislikes" , joinColumns = @JoinColumn(name = "video_id"))
-	private List<String> dislikes = new ArrayList<>();
-	
-	
+
 	
 }
