@@ -31,9 +31,9 @@ public class GlobalExceptionHandler {
 		return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
 	}
 	
-	@ExceptionHandler(EmailNotVarifiedException.class)
-	public ResponseEntity<Map<String,Object>> handleEmailNotVarifiedException(EmailNotVarifiedException ex) {
-		logger.warn("EmailNotVarifiedException: {}", ex.getMessage(),ex);
+	@ExceptionHandler(EmailNotVerifiedException.class)
+	public ResponseEntity<Map<String,Object>> handleEmailNotVerifiedException(EmailNotVerifiedException ex) {
+		logger.warn("EmailNotVerifiedException: {}", ex.getMessage(),ex);
 		return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
 	}
 	
