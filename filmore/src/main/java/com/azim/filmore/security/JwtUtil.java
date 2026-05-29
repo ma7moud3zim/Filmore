@@ -20,7 +20,7 @@ public class JwtUtil {
 	private static final long JWT_TOKEN_VALIDITY = 30L * 24 * 60 * 60 * 1000;
 	
 	
-	@Value("${jwt.secret:defultSecretForFilmore}")	
+	@Value("${jwt.secret:defultSecretForFilmoredefultSecretForFilmore}")	
 	private String secret;
 	
 	private SecretKey getSigningKey() {
