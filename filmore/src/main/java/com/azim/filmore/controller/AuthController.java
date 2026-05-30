@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.azim.filmore.dto.request.LoginRequest;
 import com.azim.filmore.dto.request.UserRequest;
+import com.azim.filmore.dto.response.LoginResponse;
 import com.azim.filmore.dto.response.MessageResponse;
 import com.azim.filmore.service.AuthService;
 
@@ -23,5 +25,11 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<MessageResponse> signUp(@Valid @RequestBody UserRequest userRequest) {
 		return ResponseEntity.ok(authService.signUp(userRequest));
+	}
+	
+	@PostMapping("/login")
+	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+		LoginResponse response = authService.login(loginRequest.getEmail() , loginRequest.getPassword());
+		return ResponseEntity.ok(response);
 	}
 }

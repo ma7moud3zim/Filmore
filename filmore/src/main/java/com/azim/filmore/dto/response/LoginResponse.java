@@ -1,11 +1,13 @@
 package com.azim.filmore.dto.response;
 
+import com.azim.filmore.enums.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LoginResopnse {
+public class LoginResponse {
 	private String token;
 	private String email;
 	private String fullName;

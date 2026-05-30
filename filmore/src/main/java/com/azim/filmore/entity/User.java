@@ -52,13 +52,13 @@ public class User {
 	private boolean active=true;
 	
 	@Column(nullable =false)
-	private boolean emailVarified = false;
+	private boolean emailVerified = false;
 	
 	@Column(unique =true)
-	private String varificationToken;
+	private String verificationToken;
 	
 	@Column
-	private Instant varificationTokenExpiry;
+	private Instant verificationTokenExpiry;
 	
 	
 	@Column

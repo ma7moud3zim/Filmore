@@ -9,10 +9,14 @@ import org.springframework.stereotype.Service;
 
 import com.azim.filmore.dao.UserRepository;
 import com.azim.filmore.dto.request.UserRequest;
+import com.azim.filmore.dto.response.LoginResponse;
 import com.azim.filmore.dto.response.MessageResponse;
 import com.azim.filmore.entity.User;
 import com.azim.filmore.enums.Role;
+import com.azim.filmore.exception.AccountDeactivatedException;
+import com.azim.filmore.exception.BadCredentialsException;
 import com.azim.filmore.exception.EmailAlreadyExistsException;
+import com.azim.filmore.exception.EmailNotVerifiedException;
 import com.azim.filmore.security.JwtUtil;
 import com.azim.filmore.service.AuthService;
 import com.azim.filmore.service.EmailService;
@@ -52,15 +56,33 @@ public class AuthServiceImpl implements AuthService{
 		user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 		user.setRole(Role.USER);
 		user.setActive(true);
-		user.setEmailVarified(false);
+		user.setEmailVerified(false);
 		String verificationToken = UUID.randomUUID().toString();
-		user.setVarificationToken(verificationToken);
-		user.setVarificationTokenExpiry(Instant.now().plusSeconds(86400));
+		user.setVerificationToken(verificationToken);
+		user.setVerificationTokenExpiry(Instant.now().plusSeconds(86400));
 		userRepository.save(user);
 		
 		emailService.sendVerificationEmail(userRequest.getEmail(), verificationToken);
 		
 		return new MessageResponse("Registeration successfull! Please check your email to verify your account.");
+	}
+
+	@Override
+	public LoginResponse login(String email, String password) {
+		User user = userRepository.
+				findByEmail(email)
+				.filter(u-> passwordEncoder.matches(password, u.getPassword()))
+				.orElseThrow(()-> new BadCredentialsException("Invalid credentials"));
+		if(!user.isActive()) {
+			throw new AccountDeactivatedException("Your Account is not active from now. Please contact us for assistance.");
+		}
+		if(!user.isEmailVerified()) {
+			throw new EmailNotVerifiedException("Please verify your email first. Check you mailbox");
+		}
+		final String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+		LoginResponse loginResponse = new LoginResponse(token, user.getEmail(), user.getFullName(), user.getRole().name());
+		
+		return loginResponse;
 	}
 
 }
