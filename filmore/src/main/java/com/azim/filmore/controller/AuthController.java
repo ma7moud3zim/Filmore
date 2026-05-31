@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.azim.filmore.dto.request.EmailRequest;
 import com.azim.filmore.dto.request.LoginRequest;
+import com.azim.filmore.dto.request.ResetPasswordRequest;
 import com.azim.filmore.dto.request.UserRequest;
 import com.azim.filmore.dto.response.EmailValidationResponse;
 import com.azim.filmore.dto.response.LoginResponse;
@@ -52,4 +53,14 @@ public class AuthController {
 		return ResponseEntity.ok(authService.resendVerification(emailRequest.getEmail()));
 	}
 	
+	
+	@PostMapping("/forget-password")
+	public ResponseEntity<MessageResponse> forgotPassword(@Valid @RequestBody EmailRequest emailRequest) { 
+		return ResponseEntity.ok(authService.forgotPassword(emailRequest.getEmail()));
+	} 
+	
+	@PostMapping("/reset-password")
+	public ResponseEntity<MessageResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+		return ResponseEntity.ok(authService.resetPassword(resetPasswordRequest.getToken(), resetPasswordRequest.getNewPassword()));
+	}
 }

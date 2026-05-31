@@ -119,4 +119,32 @@ public class AuthServiceImpl implements AuthService{
 		return new MessageResponse("Verification email sent successfully! Please check your inbox");
 	}
 
+	@Override
+	public MessageResponse forgotPassword(String email) {
+		User user = serviceUtils.getUserByEmailOrThrow(email);
+		
+		String resetToken = UUID.randomUUID().toString();
+		user.setPasswordResetToken(resetToken );
+		user.setPasswordResetTokenExpiry(Instant.now().plusSeconds(86400));
+		
+		userRepository.save(user);
+		emailService.sendPasswordResetEmail(email, resetToken );
+		return new MessageResponse("Password reset email sent successfully! Please check your inbox");
+	}
+
+	@Override
+	public MessageResponse resetPassword(String token, String newPassword) {
+		User user = userRepository.findByPasswordResetToken(token)
+				.orElseThrow(() -> new InvalidTokenException("Invalid or expired password reset token"));
+		
+		if(user.getPasswordResetTokenExpiry() == null || user.getPasswordResetTokenExpiry().isBefore(Instant.now())) {
+			throw new InvalidTokenException("Invalid or expired password reset token");
+		}
+		user.setPassword(passwordEncoder.encode(newPassword));
+		user.setPasswordResetToken(null);
+		user.setPasswordResetTokenExpiry(null);
+		userRepository.save(user);
+		return new MessageResponse("Password reset successfully! you can now login.");
+	}
+
 }
