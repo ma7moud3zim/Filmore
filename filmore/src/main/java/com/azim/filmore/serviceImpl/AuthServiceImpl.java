@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.azim.filmore.dao.UserRepository;
 import com.azim.filmore.dto.request.UserRequest;
+import com.azim.filmore.dto.response.EmailValidationResponse;
 import com.azim.filmore.dto.response.LoginResponse;
 import com.azim.filmore.dto.response.MessageResponse;
 import com.azim.filmore.entity.User;
@@ -17,6 +18,7 @@ import com.azim.filmore.exception.AccountDeactivatedException;
 import com.azim.filmore.exception.BadCredentialsException;
 import com.azim.filmore.exception.EmailAlreadyExistsException;
 import com.azim.filmore.exception.EmailNotVerifiedException;
+import com.azim.filmore.exception.InvalidTokenException;
 import com.azim.filmore.security.JwtUtil;
 import com.azim.filmore.service.AuthService;
 import com.azim.filmore.service.EmailService;
@@ -83,6 +85,26 @@ public class AuthServiceImpl implements AuthService{
 		LoginResponse loginResponse = new LoginResponse(token, user.getEmail(), user.getFullName(), user.getRole().name());
 		
 		return loginResponse;
+	}
+
+	@Override
+	public EmailValidationResponse validateEmail(String email) {
+		boolean exists = userRepository.existsByEmail(email);
+		return new EmailValidationResponse(exists, !exists);
+	}
+
+	@Override
+	public MessageResponse verifyEmail(String token) {
+		User user = userRepository.findByVerificationToken(token)
+				.orElseThrow(() -> new EmailNotVerifiedException("Invalid or expired validation token"));
+		if(user.getVerificationTokenExpiry() == null || user.getVerificationTokenExpiry().isBefore(Instant.now())) {
+			throw new InvalidTokenException("Invalid or expired validation token");
+		}
+		user.setEmailVerified(true);
+		user.setVerificationToken(null);
+		user.setVerificationTokenExpiry(null);
+		userRepository.save(user);
+		return new MessageResponse("Email verified successfully! you can now login.");
 	}
 
 }

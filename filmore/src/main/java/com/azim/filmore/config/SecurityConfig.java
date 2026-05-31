@@ -28,8 +28,8 @@ public class SecurityConfig {
 			"/api/auth/login",
 			"/api/auth/signup",
 			"/api/auth/validate-email",
-			"/api/auth/varify-email",
-			"/api/auth/resend-varification",
+			"/api/auth/verify-email",
+			"/api/auth/resend-verification",
 			"/api/auth/forget-password",
 			"/api/files/reset-password"
 	};
