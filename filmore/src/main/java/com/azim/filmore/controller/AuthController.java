@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.azim.filmore.dto.request.EmailRequest;
 import com.azim.filmore.dto.request.LoginRequest;
 import com.azim.filmore.dto.request.UserRequest;
 import com.azim.filmore.dto.response.EmailValidationResponse;
@@ -45,4 +46,10 @@ public class AuthController {
 	public ResponseEntity<MessageResponse> verifyEmail(@Valid @RequestParam String token) {
 		return ResponseEntity.ok(authService.verifyEmail(token));
 	}
+	
+	@PostMapping("/resend-verification")
+	public ResponseEntity<MessageResponse> resendVerificationEmail(@Valid @RequestBody EmailRequest emailRequest) {
+		return ResponseEntity.ok(authService.resendVerification(emailRequest.getEmail()));
+	}
+	
 }

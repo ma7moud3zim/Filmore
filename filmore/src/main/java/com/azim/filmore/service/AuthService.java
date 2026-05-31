@@ -20,5 +20,7 @@ public interface AuthService {
 
 	MessageResponse verifyEmail( String token);
 
+	MessageResponse resendVerification(String email);
+
 
 }
