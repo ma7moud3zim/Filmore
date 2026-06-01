@@ -158,4 +158,15 @@ public class AuthServiceImpl implements AuthService{
 		return new MessageResponse("Password changed successfully! You can now login.");
 	}
 
+	@Override
+	public LoginResponse currentUser(String name) {
+		User user = serviceUtils.getUserByEmailOrThrow(name);
+		return new LoginResponse(null, 
+				user.getEmail(), user.getFullName(), user.getRole().name());
+	}
+
 }
+
+
+
+

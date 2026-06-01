@@ -74,7 +74,10 @@ public class AuthController {
 	}
 	
 	
-	
+	@GetMapping("/current-user")
+	public ResponseEntity<LoginResponse> getCurrentUser(Authentication auth) {
+		return ResponseEntity.ok(authService.currentUser(auth.getName()));
+	}
 	
 	
 	
