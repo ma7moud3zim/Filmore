@@ -147,4 +147,15 @@ public class AuthServiceImpl implements AuthService{
 		return new MessageResponse("Password reset successfully! you can now login.");
 	}
 
+	@Override
+	public MessageResponse changePassword(String email, String currentPassword, String newPassword) {
+		User user = serviceUtils.getUserByEmailOrThrow(email);
+		if(!passwordEncoder.matches(currentPassword, user.getPassword())) {
+			throw new BadCredentialsException("Invalid credentials");
+		}
+		user.setPassword(passwordEncoder.encode(newPassword));
+		userRepository.save(user);
+		return new MessageResponse("Password changed successfully! You can now login.");
+	}
+
 }

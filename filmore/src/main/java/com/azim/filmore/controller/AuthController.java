@@ -2,6 +2,7 @@ package com.azim.filmore.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.azim.filmore.dto.request.ChangePasswordRequest;
 import com.azim.filmore.dto.request.EmailRequest;
 import com.azim.filmore.dto.request.LoginRequest;
 import com.azim.filmore.dto.request.ResetPasswordRequest;
@@ -63,4 +65,37 @@ public class AuthController {
 	public ResponseEntity<MessageResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
 		return ResponseEntity.ok(authService.resetPassword(resetPasswordRequest.getToken(), resetPasswordRequest.getNewPassword()));
 	}
+	
+	@PostMapping("/change-password")
+	public ResponseEntity<MessageResponse> changePassword(Authentication auth, @Valid @RequestBody ChangePasswordRequest changePasswordRequest) {
+		
+		String email = auth.getName();
+		return ResponseEntity.ok(authService.changePassword(email,changePasswordRequest.getCurrentPassword(), changePasswordRequest.getNewPassword()));
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
