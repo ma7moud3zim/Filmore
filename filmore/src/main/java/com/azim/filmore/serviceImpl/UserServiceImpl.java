@@ -5,18 +5,23 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.azim.filmore.dao.UserRepository;
 import com.azim.filmore.dto.request.UserRequest;
 import com.azim.filmore.dto.response.MessageResponse;
+import com.azim.filmore.dto.response.PageResponse;
+import com.azim.filmore.dto.response.UserResponse;
 import com.azim.filmore.entity.User;
 import com.azim.filmore.enums.Role;
 import com.azim.filmore.exception.EmailAlreadyExistsException;
 import com.azim.filmore.exception.InvalidRoleException;
 import com.azim.filmore.service.EmailService;
 import com.azim.filmore.service.UserService;
+import com.azim.filmore.util.PaginationUtils;
 import com.azim.filmore.util.ServiceUtils;
 
 
@@ -62,6 +67,41 @@ public class UserServiceImpl implements UserService {
 		if(Arrays.stream(Role.values()).noneMatch(r -> r.name().equalsIgnoreCase(role))) {
 			throw new InvalidRoleException("Invalid role: " + role);
 		}
+	}
+
+	@Override
+	public MessageResponse updateUser(Long id, UserRequest userRequest) {
+		User user = serviceUtils.getUserByIdOrThrow(id);
+		
+		ensureNotLastActiveAdmin(user);
+		validateRole(userRequest.getRole());
+		user.setFullName(userRequest.getFullName());
+		user.setRole(Role.valueOf(userRequest.getRole().toLowerCase()));
+		userRepository.save(user);
+		return new MessageResponse("User updated successfully");
+		
+	}
+
+	private void ensureNotLastActiveAdmin(User user) {
+		if(user.isActive() && user.getRole().equals(Role.ADMIN) ) {
+			long activeAdminCount = userRepository.countByRoleAndActive(Role.ADMIN, true);
+			if(activeAdminCount <= 1) {
+				throw new RuntimeException("Cannot deactivate last active admin");
+			}
+		}
+		
+	}
+
+	@Override
+	public PageResponse<UserResponse> getUsers(int page, int size, String search) {
+		Pageable pageable = PaginationUtils.createPageRequest(page, size,"id");
+		Page<User> userPage; 
+		if(search != null && !search.trim().isEmpty()) {
+			userPage = userRepository.searchUsers(search.trim(), pageable);
+		}else {
+			userPage = userRepository.findAll(pageable);
+		}
+		return PaginationUtils.toPageResponse(userPage, UserResponse::fromEntity);
 	}
 
 }
