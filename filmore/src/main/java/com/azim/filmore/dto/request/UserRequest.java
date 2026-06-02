@@ -8,7 +8,7 @@ public class UserRequest {
 	private String email;
 	private String password;
 	private String fullName;
-	private String lastrole;
+	private String role;
 	private Boolean active;
 	
 	
