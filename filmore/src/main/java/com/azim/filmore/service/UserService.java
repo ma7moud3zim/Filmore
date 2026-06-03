@@ -13,4 +13,7 @@ public interface UserService {
 
 	PageResponse<UserResponse> getUsers(int page, int size, String search);
 
+
+	MessageResponse deleteUser(Long id, String currentUserEmail);
+
 }

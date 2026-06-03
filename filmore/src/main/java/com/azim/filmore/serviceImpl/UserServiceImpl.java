@@ -104,4 +104,26 @@ public class UserServiceImpl implements UserService {
 		return PaginationUtils.toPageResponse(userPage, UserResponse::fromEntity);
 	}
 
+	@Override
+	public MessageResponse deleteUser(Long id, String currentUserEmail) {
+		User user = serviceUtils.getUserByIdOrThrow(id);
+		if(user.getEmail().equals(currentUserEmail)) {
+			throw new RuntimeException("Cannot delete yourself");
+		}
+		
+		ensureNotLastAdmin(user , "delete");
+		userRepository.deleteById(id);
+		return new MessageResponse("User deleted successfully.");
+	}
+
+	private void ensureNotLastAdmin(User user, String operation) {
+		if(user.getRole()==Role.ADMIN) {
+			long adminCount = userRepository.countByRole(Role.ADMIN);
+			if(adminCount <= 1) {
+				throw new RuntimeException("Cannot " + operation + " the last admin.");
+			}
+		}
+	}
+
+
 }
