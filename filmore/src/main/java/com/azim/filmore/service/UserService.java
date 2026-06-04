@@ -16,4 +16,6 @@ public interface UserService {
 
 	MessageResponse deleteUser(Long id, String currentUserEmail);
 
+	MessageResponse toggleUserStatus(Long id, String currentUserEmail);
+
 }

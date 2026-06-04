@@ -125,5 +125,17 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
+	@Override
+	public MessageResponse toggleUserStatus(Long id, String currentUserEmail) {
+		User user = serviceUtils.getUserByIdOrThrow(id);
+		if(user.getEmail().equals(currentUserEmail)) {
+			throw new RuntimeException("Cannot toggle status for yourself");
+		}
+		ensureNotLastActiveAdmin(user);
+		user.setActive(!user.isActive());
+		userRepository.save(user);
+		return new MessageResponse("User status toggled successfully.");
+	}
+
 
 }
