@@ -18,4 +18,6 @@ public interface UserService {
 
 	MessageResponse toggleUserStatus(Long id, String currentUserEmail);
 
+	MessageResponse changeRole(Long id, UserRequest userRequest);
+
 }
