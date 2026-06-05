@@ -28,14 +28,14 @@ public class FileHandlerUtil {
 	
 	public static Path findFileByUuid(Path directory, String uuid) throws Exception {
 		return Files.list(directory)
-				.filter(path -> path.getFileName().toString().equals(uuid))
+				.filter(path -> path.getFileName().toString().startsWith(uuid))
 				.findFirst()
 				.orElseThrow(() -> new RuntimeException("File not found for uuid: " + uuid));
 	}
 	
 	public static String detectVideoContentType(String fileName) {
 		if(fileName == null) return "video/mp4";
-		if(fileName.endsWith(".webpm")) return "video/webm";
+		if(fileName.endsWith(".webm")) return "video/webm";
 		if(fileName.endsWith(".ogg")) return "video/ogg";
 		if(fileName.endsWith(".mkv")) return "video/x-matroska";
 		if(fileName.endsWith(".avi")) return "video/x-msvideo";
