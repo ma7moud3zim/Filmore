@@ -79,11 +79,6 @@ public class FileUploadServiceImpl implements FileUploadService {
 	@Override
 	public ResponseEntity<Resource> serveVideo(String uuid, String rangeHeader) {
 		try {
-	        System.out.println(">>> serveVideo called");
-	        System.out.println(">>> videoStorageLocation: " + videoStorageLocation);
-	        System.out.println(">>> absolute path: " + videoStorageLocation.toAbsolutePath());
-	        System.out.println(">>> uuid: " + uuid);
-	        System.out.println(">>> rangeHeader: " + rangeHeader);
 			Path filePath = FileHandlerUtil.findFileByUuid(videoStorageLocation, uuid);
 			Resource resource = FileHandlerUtil.createFullResource(filePath);
 			String fileName = resource.getFilename();
@@ -95,7 +90,6 @@ public class FileUploadServiceImpl implements FileUploadService {
 			return buildPartialVideoResponse(filePath, rangeHeader, contentType, fileLength);
 			
 		}catch(Exception e) {
-	        System.out.println(">>> ERROR: " + e.getMessage());
 	        e.printStackTrace();
 			return ResponseEntity.notFound().build();
 		}

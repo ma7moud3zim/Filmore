@@ -50,9 +50,7 @@ public class FileUploadController {
 	public ResponseEntity<Resource> getVideo(@PathVariable String uuid, 
 			@RequestHeader(value="Range",required = false) String rangeHeader,
 			@RequestParam(value="token",required = false) String tokenParam) {
-		
-	    System.out.println(">>> CONTROLLER REACHED - UUID: " + uuid);
-		
+				
 		return fileUploadService.serveVideo(uuid,rangeHeader);
 	}
 	
