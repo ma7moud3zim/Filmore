@@ -25,7 +25,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 	@Value("${file.upload.video-dir:uploads/videos}")
 	private String videoDir;
 	
-	@Value("${file.upload.video-dir:uploads/images}")
+	@Value("${file.upload.image-dir:uploads/images}")
 	private String imageDir;
 	
 	@PostConstruct
@@ -45,11 +45,15 @@ public class FileUploadServiceImpl implements FileUploadService {
 	
 	@Override
 	public String storeVideoFile(MultipartFile file) {
-		return sotreFile(file, videoStorageLocation);
+		return storeFile(file, videoStorageLocation);
 	}
 
+	@Override
+	public String storeImageFile(MultipartFile file) {
+		return storeFile(file, imageStorageLocation);
+	}
 
-	private String sotreFile(MultipartFile file, Path storageLocation) {
+	private String storeFile(MultipartFile file, Path storageLocation) {
 		String FileExtension = FileHandlerUtil.extractFileExtension(file.getOriginalFilename());
 		String uuid = UUID.randomUUID().toString();
 		String fileName = uuid + FileExtension;
@@ -60,12 +64,14 @@ public class FileUploadServiceImpl implements FileUploadService {
 			}
 			Path targetLocation = storageLocation.resolve(fileName);
 			Files.copy(file.getInputStream(),  targetLocation, StandardCopyOption.REPLACE_EXISTING);
-			Files.copy(file.getInputStream(), videoStorageLocation.resolve(fileName));
 			return uuid;
 		} catch (Exception e) {
 			throw new RuntimeException("Could not store file " + fileName + ". Please try again!", e);
 		}
 	}
+
+
+
 
 }
 
