@@ -77,18 +77,18 @@ public class Video {
 	
 	@JsonProperty("src")
 	public String getSrc() {
-		if(srcUuid == null && !srcUuid.isEmpty()) {
+		if(srcUuid == null || !srcUuid.isEmpty()) {
 			String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-			return baseUrl + "/api/files/video/" + srcUuid;
+			return baseUrl + "/api/files/videos/" + srcUuid;
 		}
 		return null;
 	}
 	
 	@JsonProperty("poster")
 	public String getPoster(){
-		if(posterUuid == null && !posterUuid.isEmpty()) {
+		if(posterUuid == null || !posterUuid.isEmpty()) {
 			String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-			return baseUrl + "/api/files/video/" + posterUuid;
+			return baseUrl + "/api/files/videos/" + posterUuid;
 		}
 		return null;
 	}
