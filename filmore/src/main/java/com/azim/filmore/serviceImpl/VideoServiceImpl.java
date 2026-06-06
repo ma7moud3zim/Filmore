@@ -18,6 +18,8 @@ import com.azim.filmore.service.VideoService;
 import com.azim.filmore.util.PaginationUtils;
 import com.azim.filmore.util.ServiceUtils;
 
+import jakarta.validation.Valid;
+
 @Service
 public class VideoServiceImpl implements VideoService {
 	
@@ -57,6 +59,25 @@ public class VideoServiceImpl implements VideoService {
 			videoPage = videoRepository.findAll(pageable);
 		}
 		return PaginationUtils.toPageResponse(videoPage, VideoResponse::fromEntity);
+	}
+
+	@Override
+	public MessageResponse updateVideoByAdmin(Long id, @Valid VideoRequest videoRequest) {
+		Video video = new Video();
+		video.setId(id);
+		video.setTitle(videoRequest.getTitle());
+		video.setDescription(videoRequest.getDescription());
+		video.setYear(videoRequest.getYear());
+		video.setRating(videoRequest.getRating());
+		video.setDuration(videoRequest.getDuration());
+		video.setSrcUuid(videoRequest.getSrc());
+		video.setPosterUuid(videoRequest.getPoster());
+		video.setPublished(videoRequest.isPublished());
+		video.setCategories(videoRequest.getCategories()!=null?videoRequest.getCategories():List.of());
+		
+		videoRepository.save(video);
+		
+		return new MessageResponse("Video updated successfully");
 	}
 
 }
