@@ -80,4 +80,24 @@ public class VideoServiceImpl implements VideoService {
 		return new MessageResponse("Video updated successfully");
 	}
 
+	@Override
+	public MessageResponse deleteVideoByAdmin(Long id) {
+		if(!videoRepository.existsById(id)) {
+			return new MessageResponse("Video not found");
+		}
+		videoRepository.deleteById(id);
+		return new MessageResponse("Video deleted successfully");
+	}
+
+	@Override
+	public MessageResponse toggleVideoPublishStatusByAdmin(Long id, boolean status) {
+		Video video = serviceUtils.getVideoByIdOrThrow(id);
+		if(video == null) {
+			return new MessageResponse("Video not found");
+		}
+		video.setPublished(status);
+		videoRepository.save(video);
+		return new MessageResponse("Video published status updated successfully");
+	}
+
 }
