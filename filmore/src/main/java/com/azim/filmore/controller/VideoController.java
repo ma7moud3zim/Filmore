@@ -18,6 +18,7 @@ import com.azim.filmore.dto.request.VideoRequest;
 import com.azim.filmore.dto.response.MessageResponse;
 import com.azim.filmore.dto.response.PageResponse;
 import com.azim.filmore.dto.response.VideoResponse;
+import com.azim.filmore.dto.response.VideoStatsResponse;
 import com.azim.filmore.service.VideoService;
 
 import jakarta.validation.Valid;
@@ -63,6 +64,12 @@ public class VideoController {
 	public ResponseEntity<MessageResponse> toggleVideoPublishStatusByAdmin(@PathVariable Long id
 			,@RequestParam boolean value) {
 		return ResponseEntity.ok(videoService.toggleVideoPublishStatusByAdmin(id, value));
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/stats")	
+	public ResponseEntity<VideoStatsResponse> getAdminStats(){
+		return ResponseEntity.ok(videoService.getAdminStats());
 	}
 }
 

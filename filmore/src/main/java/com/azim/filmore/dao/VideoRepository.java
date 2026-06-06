@@ -16,4 +16,11 @@ public interface VideoRepository extends JpaRepository<Video,Long> {
 			+ "LOWER(v.description) LIKE LOWER(CONCAT('%',:search,'%'))")
 	Page<Video> searchVideos(@Param("search") String saerch, Pageable pageable);
 
+	@Query("SELECT count(v) FROM Video v WHERE v.published = true")
+	long countPublished();
+
+	
+	@Query("SELECT COALESCE(SUM(v.duration),0) FROM Video v")
+	long getTotalDuration();
+
 }

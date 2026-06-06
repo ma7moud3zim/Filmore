@@ -13,6 +13,7 @@ import com.azim.filmore.dto.request.VideoRequest;
 import com.azim.filmore.dto.response.MessageResponse;
 import com.azim.filmore.dto.response.PageResponse;
 import com.azim.filmore.dto.response.VideoResponse;
+import com.azim.filmore.dto.response.VideoStatsResponse;
 import com.azim.filmore.entity.Video;
 import com.azim.filmore.service.VideoService;
 import com.azim.filmore.util.PaginationUtils;
@@ -99,5 +100,15 @@ public class VideoServiceImpl implements VideoService {
 		videoRepository.save(video);
 		return new MessageResponse("Video published status updated successfully");
 	}
+
+	@Override
+	public VideoStatsResponse getAdminStats() {
+		long totalVideos = videoRepository.count();
+		long published = videoRepository.countPublished();
+		long totalDuration = videoRepository.getTotalDuration();
+		return new VideoStatsResponse(totalVideos, published, totalDuration);
+	}
+	
+	
 
 }

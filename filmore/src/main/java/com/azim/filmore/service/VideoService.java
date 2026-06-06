@@ -4,6 +4,7 @@ import com.azim.filmore.dto.request.VideoRequest;
 import com.azim.filmore.dto.response.MessageResponse;
 import com.azim.filmore.dto.response.PageResponse;
 import com.azim.filmore.dto.response.VideoResponse;
+import com.azim.filmore.dto.response.VideoStatsResponse;
 
 import jakarta.validation.Valid;
 
@@ -18,5 +19,7 @@ public interface VideoService {
 	MessageResponse deleteVideoByAdmin(Long id);
 
 	MessageResponse toggleVideoPublishStatusByAdmin(Long id, boolean value);
+
+	VideoStatsResponse getAdminStats();
 
 }
