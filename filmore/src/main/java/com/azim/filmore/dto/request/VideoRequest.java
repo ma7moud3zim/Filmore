@@ -21,6 +21,6 @@ public class VideoRequest {
 	private Integer duration;
 	private String src;
 	private String poster;
-	private Boolean published;
+	private boolean published;
 	private List<String> categories;
 } 
