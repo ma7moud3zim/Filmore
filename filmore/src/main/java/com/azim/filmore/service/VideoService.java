@@ -1,5 +1,7 @@
 package com.azim.filmore.service;
 
+import java.util.List;
+
 import com.azim.filmore.dto.request.VideoRequest;
 import com.azim.filmore.dto.response.MessageResponse;
 import com.azim.filmore.dto.response.PageResponse;
@@ -23,5 +25,7 @@ public interface VideoService {
 	VideoStatsResponse getAdminStats();
 
 	PageResponse<VideoResponse>  getPublishedVideos(int page, int size, String search, String email);
+
+	List<VideoResponse> getFeaturedVideos();
 
 }

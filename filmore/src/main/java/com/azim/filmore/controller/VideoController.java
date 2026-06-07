@@ -1,5 +1,7 @@
 package com.azim.filmore.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -82,6 +84,11 @@ public class VideoController {
 			Authentication auth) {
 		String email = auth.getName();
 		return ResponseEntity.ok(videoService.getPublishedVideos(page, size, search,email));
+	}
+	
+	@GetMapping("/featured")
+	public ResponseEntity<List<VideoResponse>> getFeaturedVideos() {
+		return ResponseEntity.ok(videoService.getFeaturedVideos());
 	}
 	
 	

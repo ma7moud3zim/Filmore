@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -136,6 +137,14 @@ public class VideoServiceImpl implements VideoService {
 		
 		List<VideoResponse> videoResponses = videos.stream().map(VideoResponse::fromEntity).toList();
 		return PaginationUtils.toPageResponse(videoPage, videoResponses);
+	}
+
+	@Override
+	public List<VideoResponse> getFeaturedVideos() {
+		Pageable pageable = PageRequest.of(0, 5);
+		
+		List<Video> videos = videoRepository.findRandomPublishedVideos(pageable);
+		return videos.stream().map(VideoResponse::fromEntity).toList();
 	}
 	
 	
