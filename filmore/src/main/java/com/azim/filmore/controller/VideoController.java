@@ -3,6 +3,7 @@ package com.azim.filmore.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -49,7 +50,8 @@ public class VideoController {
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/admin/{id}")
-	public ResponseEntity<MessageResponse> updateVideoByAdmin(@PathVariable Long id, @Valid @RequestBody VideoRequest videoRequest) {
+	public ResponseEntity<MessageResponse> updateVideoByAdmin(@PathVariable Long id,
+			@Valid @RequestBody VideoRequest videoRequest) {
 		return ResponseEntity.ok(videoService.updateVideoByAdmin(id, videoRequest));
 	}
 	
@@ -71,6 +73,19 @@ public class VideoController {
 	public ResponseEntity<VideoStatsResponse> getAdminStats(){
 		return ResponseEntity.ok(videoService.getAdminStats());
 	}
+	
+	@GetMapping("/published")
+	public ResponseEntity<PageResponse<VideoResponse>> getPublishedVideos(
+			@RequestParam(defaultValue="0") int page, 
+			@RequestParam(defaultValue="10") int size,
+			@RequestParam(required=false) String search,
+			Authentication auth) {
+		String email = auth.getName();
+		return ResponseEntity.ok(videoService.getPublishedVideos(page, size, search,email));
+	}
+	
+	
+	
 }
 
 

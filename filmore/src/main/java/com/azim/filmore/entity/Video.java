@@ -72,8 +72,8 @@ public class Video {
 	
 	
 	@Transient
-	@JsonProperty("isInWatchList")
-	private Boolean isInWatchList = false;
+	@JsonProperty("isInWatchlist")
+	private Boolean isInWatchlist = false;
 	
 	@JsonProperty("src")
 	public String getSrc() {

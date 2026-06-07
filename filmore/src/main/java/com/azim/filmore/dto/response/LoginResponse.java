@@ -1,7 +1,5 @@
 package com.azim.filmore.dto.response;
 
-import com.azim.filmore.enums.Role;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
