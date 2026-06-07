@@ -87,7 +87,7 @@ public class User {
 	public void addToWatchlist(Video video) {
 		watchlist.add(video);
 	}
-	public void removeToWatchlist(Video video) {
+	public void removeFromWatchlist(Video video) {
 		watchlist.remove(video);
 	}
 	

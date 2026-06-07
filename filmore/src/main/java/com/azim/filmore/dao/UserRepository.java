@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.azim.filmore.entity.User;
+import com.azim.filmore.entity.Video;
 import com.azim.filmore.enums.Role;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -35,5 +36,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	@Query("SELECT v.id FROM User u JOIN u.watchlist v WHERE u.email = :email AND v.id IN :videosIds")
 	Set<Long> findWatchlistVideosIds(@Param("email") String email,@Param("videosIds") List<Long> videosIds);
+
+	@Query("SELECT v FROM User u JOIN u.watchlist v"
+			+ "WHERE u.id = :userId AND v.published = true AND ("
+			+ "LOWER(v.title) LIKE LOWER(CONCAT('%',:search,'%')) OR " 
+			+ "LOWER(v.description) LIKE LOWER(CONCAT('%',:search,'%')))")
+	Page<Video> searhWatchlistByUserId(@Param("userId") Long userId, @Param("search") String search, Pageable pageable);
+
+	@Query("SELECT v FROM User u JOIN u.watchlist v"
+			+ "WHERE u.id = :userId AND v.published = true")
+	Page<Video> findByWatchlistUserId(@Param("userId") Long userId, Pageable pageable);
 	
 }
