@@ -15,5 +15,23 @@
       shows and more
     </h1>
     <p class="hero-caption">Ready to watch? Enter your email to get started!</p>
+    <form [formGroup]="landingForm" class="cta" (ngSubmit)="getStarted()" novalidate>
+      <mat-form-field appearance="outline" class="email-field">
+        <mat-label>Email address</mat-label>
+        <input matInput formControlName="email" />
+        <mat-icon matPrefix>email</mat-icon>
+        <mat-error *ngIf="landingForm.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="landingForm.get('email')?.hasError('email')">
+          Please enter a valid email address
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-flat-button class="cta-btn" type="submit" [disabled]="!landingForm.valid">
+        Get Started
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </form>
   </section>
 </div>
