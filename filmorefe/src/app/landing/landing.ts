@@ -63,7 +63,7 @@ export class Landing {
     {
       question: 'How much does Filmore cost?',
       answer:
-        'For only 100$, watch Filmore on your phone, tablet, Smart TV, laptop, or streaming device, all for one fixed monthly fee. Plans range from ₦400 to ₦1,000 a month. No extra costs, no contracts.',
+        'For only 100$ per month, watch Filmore on your phone, tablet, Smart TV, laptop, or streaming device, all for one fixed monthly fee. No extra costs, no contracts.',
     },
     {
       question: 'How do I cancel?',

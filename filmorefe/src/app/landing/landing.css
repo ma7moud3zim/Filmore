@@ -265,6 +265,7 @@
 /* -------- Reasons -------- */
 .reasons-wrap {
   padding: 48px clamp(16px, 5vw, 64px) 48px;
+  background: var(--secondary);
 }
 
 .reason-grid {
@@ -286,8 +287,8 @@
 
   h3 {
     margin: 0 0 10px;
-    font-size: clamp(18px, 2.2vw, 22px);
-    font-weight: 800;
+    font-size: clamp(17px, 2vw, 20px);
+    font-weight: 600;
   }
   p {
     margin: 0;
@@ -357,8 +358,8 @@
 }
 
 .question {
-  font-size: clamp(18px, 2.6vw, 26px);
-  font-weight: 600;
+  font-size: clamp(14px, 2.5vw, 23px);
+  font-weight: 400;
   color: #fff;
 }
 
@@ -366,17 +367,17 @@
 
 .toggle-icon {
   color: #fff;
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
+  font-size: 25px;
+  width: 25px;
+  height: 25px;
 }
 
 /* Answer body */
 .faq-item .answer {
   padding: 20px;
-  font-size: clamp(15px, 1.8vw, 18px);
+  font-size: clamp(15px, 1.8vw, 20px);
   line-height: 1.5;
-  color: #9CA3AF;
+  color: #aabee2;
   background: #1F2937;
   border-top: 1px solid #374151;
 }

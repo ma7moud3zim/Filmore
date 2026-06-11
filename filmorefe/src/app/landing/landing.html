@@ -35,3 +35,50 @@
     </form>
   </section>
 </div>
+
+<section class="reasons-wrap">
+  <h2 class="row-title">More reasons to join!</h2>
+  <br />
+  <div class="reason-grid">
+    <mat-card class="reason-card" *ngFor="let r of reasons">
+      <h3>{{ r.title }}</h3>
+      <p>{{ r.text }}</p>
+
+      <div class="badge">
+        <mat-icon>{{ r.icon }}</mat-icon>
+      </div>
+    </mat-card>
+  </div>
+</section>
+<br />
+<section class="faq">
+  <h2 class="row-title">Frequently Asked Questions</h2>
+  <br />
+  <mat-accordion class="faq-accordion">
+    <mat-expansion-panel
+      *ngFor="let faq of faqs"
+      class="faq-item"
+      [hideToggle]="true"
+      #panel="matExpansionPanel"
+    >
+      <mat-expansion-panel-header>
+        <span class="question">{{ faq.question }}</span>
+        <span class="spacer"></span>
+        <mat-icon class="toggle-icon" *ngIf="!panel.expanded">expand</mat-icon>
+        <mat-icon class="toggle-icon" *ngIf="panel.expanded">close</mat-icon>
+      </mat-expansion-panel-header>
+      <div class="answer">{{ faq.answer }}</div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>© {{ year }} Filmore, All rights reserved</span>
+    <nav class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="mailto:eng3zim@gmail.com">Contact Us</a>
+    </nav>
+  </div>
+</footer>
