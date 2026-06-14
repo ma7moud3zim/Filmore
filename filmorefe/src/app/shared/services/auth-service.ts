@@ -36,6 +36,6 @@ export class AuthService {
   // The verify email method takes a token as a parameter,
   // and sends a GET request to the /verify-email endpoint of the API with the token as a query parameter.
   verifyEmail(token: string) {
-    return this.http.get(this.apiUrl + 'verify-email?token=' + token);
+    return this.http.get(this.apiUrl + '/verify-email?token=' + token);
   }
 }

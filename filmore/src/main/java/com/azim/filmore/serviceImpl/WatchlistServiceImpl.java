@@ -60,7 +60,7 @@ public class WatchlistServiceImpl implements WatchlistService {
 		Pageable pageable = PaginationUtils.createPageRequest(page, size);
 		Page<Video> videoPage;
 		if(search != null && !search.trim().isEmpty()) {
-			videoPage = userRepository.searhWatchlistByUserId(user.getId(), search.trim(), pageable);
+			videoPage = userRepository.searchWatchlistByUserId(user.getId(), search.trim(), pageable);
 		}else {
 			videoPage = userRepository.findByWatchlistUserId(user.getId(), pageable);
 		}

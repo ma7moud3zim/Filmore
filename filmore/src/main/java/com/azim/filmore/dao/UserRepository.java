@@ -38,13 +38,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	Set<Long> findWatchlistVideosIds(@Param("email") String email,@Param("videosIds") List<Long> videosIds);
 
 	@Query("SELECT v FROM User u JOIN u.watchlist v"
-			+ "WHERE u.id = :userId AND v.published = true AND ("
+			+ " WHERE u.id = :userId AND v.published = true AND ("
 			+ "LOWER(v.title) LIKE LOWER(CONCAT('%',:search,'%')) OR " 
 			+ "LOWER(v.description) LIKE LOWER(CONCAT('%',:search,'%')))")
-	Page<Video> searhWatchlistByUserId(@Param("userId") Long userId, @Param("search") String search, Pageable pageable);
+	Page<Video> searchWatchlistByUserId(@Param("userId") Long userId, @Param("search") String search, Pageable pageable);
 
 	@Query("SELECT v FROM User u JOIN u.watchlist v"
-			+ "WHERE u.id = :userId AND v.published = true")
+			+ " WHERE u.id = :userId AND v.published = true")
 	Page<Video> findByWatchlistUserId(@Param("userId") Long userId, Pageable pageable);
 	
 }
