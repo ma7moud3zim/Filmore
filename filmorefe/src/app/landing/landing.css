@@ -425,20 +425,24 @@
 .footer-links a:hover { color: #fff; text-decoration: underline; }
 
 .logo {
+  position: absolute;
+  left: 32px;
+  top: 18px;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.5px;
   flex-shrink: 0;
 }
 
 .logo-icon {
-  font-size: 32px;
-  width: 32px;
-  height: 32px;
-  color: #3B82F6;
+  font-size: 34px;
+  width: 34px;
+  height: 34px;
+  color: #ffffff;
 }
 
 .logo-text {

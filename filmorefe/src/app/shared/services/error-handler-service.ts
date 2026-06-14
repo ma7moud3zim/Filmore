@@ -10,7 +10,7 @@ export class ErrorHandlerService {
   // This method is used to handle errors and display a notification to the user.
   handle(error: any, fullbackMessage: string) {
     const errorMsg = error.error?.error || fullbackMessage;
-    this.notification.error(errorMsg);
+    this.notification.error('API Error: ', errorMsg);
     console.error(error);
   }
 }
