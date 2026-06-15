@@ -1,1 +1,64 @@
-<p>login works!</p>
+<div class="auth-page">
+  <div class="bg"></div>
+  <mat-toolbar class="topbar" color="transparent">
+    <div class="logo">
+      <mat-icon class="logo-icon">movie</mat-icon>
+      <span class="logo-text">Filmore</span>
+    </div>
+  </mat-toolbar>
+
+  <mat-card class="auth-card" appearance="outlined">
+    <h1>Sign In</h1>
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="form">
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" />
+        <mat-icon matPrefix>email</mat-icon>
+        <mat-error *ngIf="loginForm.get('email')?.hasError('required')"
+          >Email is required
+        </mat-error>
+        <mat-error *ngIf="loginForm.get('email')?.hasError('email')"
+          >Please enter a valid email address
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" />
+        <mat-icon matPrefix>lock</mat-icon>
+        <button mat-icon-button matSuffix (click)="hide = !hide" type="button" tabindex="-1">
+          <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="loginForm.get('password')?.hasError('required')"
+          >Password is required
+        </mat-error>
+      </mat-form-field>
+
+      <button
+        mat-raised-button
+        class="signin-btn"
+        color="primary"
+        type="submit"
+        [disabled]="loading || !loginForm.valid"
+      >
+        {{ loading ? 'Signing In...' : 'Sign In' }}
+      </button>
+
+      <button
+        type="button"
+        class="lin-btn resend"
+        *ngIf="showResendLink"
+        (click)="resendVerification()"
+      >
+        Resend Verification email
+      </button>
+
+      <button type="button" class="link-btn forgot" (click)="forgot()">Forgot Password?</button>
+
+      <div class="signup">
+        <span>Don't have an account? </span>
+        <a router="/signup" class="link">Sign Up</a>
+      </div>
+    </form>
+  </mat-card>
+</div>

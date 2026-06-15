@@ -15,11 +15,11 @@
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.9)),
+    linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.35) 40%, rgba(0,0,0,0.85) 100%),
     url('/bg.jpg');
   background-size: cover;
   background-position: center;
-  filter: brightness(0.9);
+  filter: brightness(0.95);
   z-index: 1;
 }
 
@@ -52,17 +52,23 @@
   background-clip: text;
 }
 
-
 .auth-card {
   position: relative;
   z-index: 2;
   width: min(92vw, 480px);
   padding: 48px 40px;
-  background: rgba(0, 0, 0, 0.75) !important;
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgb(0, 0, 0) !important;
+  border: 3px solid rgb(0, 75, 129);
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.6);
   text-align: center;
+
+  /* center children vertically */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
 }
 
 .loading-container,
@@ -71,7 +77,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 20px;
+  width: 100%;
 }
 
 .loading-container h2 {
@@ -163,4 +171,15 @@ h1 {
     width: 60px;
     height: 60px;
   }
+}
+
+/* Toolbar must be out of flow so flex centering only targets the card */
+.topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  background: transparent !important;
+  box-shadow: none !important;
 }
