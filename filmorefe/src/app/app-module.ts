@@ -1,4 +1,9 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  inject,
+  NgModule,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing-module';
@@ -11,11 +16,17 @@ import { Login } from './login/login';
 import { VerifyEmail } from './verify-email/verify-email';
 import { Home } from './user/home/home';
 import { authInterceptor } from './shared/interceptors/auth-interceptor';
+import { ForgotPassword } from './forgot-password/forgot-password';
+import { AuthService } from './shared/services/auth-service';
 
 @NgModule({
-  declarations: [App, Landing, Signup, Login, VerifyEmail, Home],
+  declarations: [App, Landing, Signup, Login, VerifyEmail, Home, ForgotPassword],
   imports: [BrowserModule, AppRoutingModule, SharedModule],
   providers: [
+    provideAppInitializer(() => {
+      const auth = inject(AuthService);
+      return auth.initializeAuth();
+    }),
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(withInterceptors([authInterceptor])),
   ],

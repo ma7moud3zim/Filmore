@@ -32,9 +32,11 @@ export class Login implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.authService.isLoggedIn()) {
-      this.authService.redirectBasedOnRole();
+    if (!this.authService.isLoggedIn()) {
+      // Not logged in - stay on login page
+      return;
     }
+    this.authService.redirectBasedOnRole();
   }
 
   submit() {
@@ -74,13 +76,12 @@ export class Login implements OnInit {
     this.authService.resendVerificationEmail(this.userEmail).subscribe({
       next: (response: any) => {
         this.loading = false;
-        this.notification.sucess(response?.message || 'Verification email sent successfully.');
+        this.notification.success(response?.message || 'Verification email sent successfully.');
       },
       error: (err) => {
         this.loading = false;
-        this.errorHandlerService.handle(
-          err,
-          'Failed to send verification email. Please try again.',
+        this.notification.error(
+          err.error?.message || 'Failed to send verification email. Please, try again.',
         );
       },
     });

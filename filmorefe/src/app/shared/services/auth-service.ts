@@ -62,10 +62,6 @@ export class AuthService {
     this.setCurrentUser(authData);
   }
 
-  logout() {
-    this.currentUserSubject.next(null);
-  }
-
   setCurrentUser(user: any) {
     this.currentUserSubject.next(user);
   }
@@ -91,6 +87,14 @@ export class AuthService {
     return !!this.getToken();
   }
   redirectBasedOnRole() {
+    if (!this.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const currentUrl = this.router.url;
+    if (currentUrl === '/login' || currentUrl === '/') return;
+
     const targetUrl = this.isAdmin() ? '/admin' : '/home';
     this.router.navigate([targetUrl]);
   }
@@ -102,5 +106,42 @@ export class AuthService {
 
   resendVerificationEmail(email: string) {
     return this.http.post(this.apiUrl + '/resend-verification', { email });
+  }
+
+  forgotPassword(email: string) {
+    return this.http.post(this.apiUrl + '/forgot-password', { email });
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.http.post(this.apiUrl + '/reset-password', { token, newPassword });
+  }
+
+  initializeAuth(): Promise<void> {
+    return new Promise((resolve) => {
+      if (!this.isLoggedIn()) {
+        this.handleAuthSuccess(null);
+        resolve();
+        return;
+      }
+      this.fetchCurrentUser().subscribe({
+        next: (user) => {
+          this.setCurrentUser(user);
+          resolve();
+        },
+        error: () => {
+          this.handleAuthSuccess(null); // handle logout();
+          resolve();
+        },
+      });
+    });
+  }
+  private fetchCurrentUser() {
+    return this.http.get(this.apiUrl + '/current-user');
+  }
+
+  logout() {
+    localStorage.removeItem('token');
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/']);
   }
 }

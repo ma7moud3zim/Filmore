@@ -58,7 +58,7 @@ export class Signup implements OnInit {
     this.authService.signup(data).subscribe({
       next: (response: any) => {
         this.loading = false;
-        this.notification.sucess(response?.message);
+        this.notification.success(response?.message);
         this.router.navigate(['/login']);
       },
       error: (error) => {
