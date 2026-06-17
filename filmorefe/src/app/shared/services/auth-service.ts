@@ -109,7 +109,7 @@ export class AuthService {
   }
 
   forgotPassword(email: string) {
-    return this.http.post(this.apiUrl + '/forgot-password', { email });
+    return this.http.post(this.apiUrl + '/forget-password', { email });
   }
 
   resetPassword(token: string, newPassword: string) {

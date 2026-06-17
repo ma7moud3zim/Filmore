@@ -18,9 +18,10 @@ import { Home } from './user/home/home';
 import { authInterceptor } from './shared/interceptors/auth-interceptor';
 import { ForgotPassword } from './forgot-password/forgot-password';
 import { AuthService } from './shared/services/auth-service';
+import { ResetPassword } from './reset-password/reset-password';
 
 @NgModule({
-  declarations: [App, Landing, Signup, Login, VerifyEmail, Home, ForgotPassword],
+  declarations: [App, Landing, Signup, Login, VerifyEmail, Home, ForgotPassword, ResetPassword],
   imports: [BrowserModule, AppRoutingModule, SharedModule],
   providers: [
     provideAppInitializer(() => {

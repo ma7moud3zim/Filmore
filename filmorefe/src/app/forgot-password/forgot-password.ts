@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   styleUrl: './forgot-password.css',
 })
 export class ForgotPassword {
-  forgotPassword!: FormGroup;
+  forgotPasswordForm!: FormGroup;
   loading = false;
 
   constructor(
@@ -20,14 +20,14 @@ export class ForgotPassword {
     private notification: NotificationService,
     private router: Router,
   ) {
-    this.forgotPassword = this.fb.group({
+    this.forgotPasswordForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
     });
   }
 
   submit() {
     this.loading = true;
-    const email = this.forgotPassword.value.email.trim().toLowerCase();
+    const email = this.forgotPasswordForm.value.email.trim().toLowerCase();
 
     this.authService.forgotPassword(email).subscribe({
       next: (response: any) => {

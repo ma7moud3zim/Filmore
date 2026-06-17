@@ -88,6 +88,6 @@ export class Login implements OnInit {
   }
 
   forgot() {
-    this.router.navigate(['/forget-password']);
+    this.router.navigate(['/forgot-password']);
   }
 }
