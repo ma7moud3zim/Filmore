@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, filter, take, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -92,9 +92,16 @@ export class AuthService {
       return;
     }
 
-    const currentUrl = this.router.url;
-    if (currentUrl === '/login' || currentUrl === '/') return;
-
+    const user = this.getCurrentUser();
+    if (!user) {
+      this.currentUser$
+        .pipe(
+          filter((u) => u !== null),
+          take(1),
+        )
+        .subscribe(() => this.redirectBasedOnRole());
+      return;
+    }
     const targetUrl = this.isAdmin() ? '/admin' : '/home';
     this.router.navigate([targetUrl]);
   }
