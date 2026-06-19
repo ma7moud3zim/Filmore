@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AuthService } from '../../services/auth-service';
+import { DialogService } from '../../services/dialog-service';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -6,4 +10,59 @@ import { Component } from '@angular/core';
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
-export class Header {}
+export class Header implements OnInit, OnDestroy {
+  @Input() showRouterOutlet = true;
+  currentuser: any = null;
+  isAdminMode: boolean = false;
+  private routerSubscription: Subscription | null = null;
+  constructor(
+    private authService: AuthService,
+    private dialogService: DialogService,
+    private router: Router,
+  ) {}
+
+  ngOnInit(): void {
+    this.currentuser = this.authService.getCurrentUser();
+    this.updateMode();
+    this.routerSubscription = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.updateMode();
+      });
+  }
+
+  private updateMode(): void {
+    this.isAdminMode = this.router.url.startsWith('/admin');
+  }
+  ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+
+  isAdmin(): boolean {
+    return this.currentuser?.role === 'ADMIN';
+  }
+
+  switchMode(): void {
+    if (this.isAdminMode) {
+      this.router.navigate(['/home']);
+    } else {
+      this.router.navigate(['/admin']);
+    }
+  }
+
+  openChangePassword() {
+    this.dialogService.openChangePasswordDialog();
+  }
+
+  logout() {
+    this.dialogService
+      .openConfirmation('Logout', 'Are you sure you want to logout?', 'Logout', 'Cancel', 'warning')
+      .subscribe((result) => {
+        if (result) {
+          this.authService.logout();
+        }
+      });
+  }
+}
