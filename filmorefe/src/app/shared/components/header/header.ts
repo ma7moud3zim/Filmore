@@ -12,7 +12,7 @@ import { filter, Subscription } from 'rxjs';
 })
 export class Header implements OnInit, OnDestroy {
   @Input() showRouterOutlet = true;
-  currentuser: any = null;
+  currentUser: any = null;
   isAdminMode: boolean = false;
   private routerSubscription: Subscription | null = null;
   constructor(
@@ -22,7 +22,7 @@ export class Header implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.currentuser = this.authService.getCurrentUser();
+    this.currentUser = this.authService.getCurrentUser();
     this.updateMode();
     this.routerSubscription = this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -41,7 +41,7 @@ export class Header implements OnInit, OnDestroy {
   }
 
   isAdmin(): boolean {
-    return this.currentuser?.role === 'ADMIN';
+    return this.currentUser?.role === 'ADMIN';
   }
 
   switchMode(): void {
