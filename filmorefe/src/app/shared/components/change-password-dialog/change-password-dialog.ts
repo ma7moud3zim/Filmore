@@ -29,7 +29,7 @@ export class ChangePasswordDialog {
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: [
         '',
-        [Validators.required, [this.authService.passwordMatchValidator('newPassword')]],
+        [Validators.required, this.authService.passwordMatchValidator('newPassword')],
       ],
     });
   }
@@ -50,7 +50,7 @@ export class ChangePasswordDialog {
 
       error: (err) => {
         this.loading = false;
-        this.errorHandlerService.handle(err, 'Error changing password');
+        this.errorHandlerService.handle(err, 'Error changing password. Please, try again.');
       },
     });
   }
