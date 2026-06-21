@@ -72,5 +72,12 @@
 <ng-container *ngIf="showRouterOutlet">
   <div class="app-header">
     <ng-container *ngTemplateOutlet="headerBar"></ng-container>
+    <main cass="main-content">
+      <router-outlet></router-outlet>
+    </main>
   </div>
+</ng-container>
+
+<ng-container *ngIf="!showRouterOutlet">
+  <ng-container *ngTemplateOutlet="headerBar"></ng-container>
 </ng-container>
