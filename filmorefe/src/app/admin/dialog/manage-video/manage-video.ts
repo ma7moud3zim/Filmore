@@ -1,4 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { RATINGS, VIDEO_CATEGORIES } from '../../../shared/constants/app.constants';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MediaService } from '../../../shared/services/media-service';
+import { NotificationService } from '../../../shared/services/notification-service';
+import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
+import { VideoService } from '../../../shared/services/video-service';
 
 @Component({
   selector: 'app-manage-video',
@@ -6,4 +12,193 @@ import { Component } from '@angular/core';
   templateUrl: './manage-video.html',
   styleUrl: './manage-video.css',
 })
-export class ManageVideo {}
+export class ManageVideo implements OnInit {
+  isSaving = false;
+  uploadProgress = 0;
+  posterProgress = 0;
+
+  categoriesAll = VIDEO_CATEGORIES;
+  ratings = RATINGS;
+  videoForm: any;
+
+  videoPreviewUrl: string | null = null;
+  posterPreviewUrl: string | null = null;
+  videoLoading = false;
+  posterLoading = false;
+  isEditMode: boolean = false;
+  error = '';
+
+  constructor(
+    private fb: FormBuilder,
+    private videoService: VideoService,
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef,
+    private mediaService: MediaService,
+    public dialogRef: MatDialogRef<ManageVideo>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {
+    this.isEditMode = data.mode === 'edit';
+    this.videoForm = this.fb.group({
+      title: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+      year: [new Date().getFullYear(), [Validators.required]],
+      rating: ['', [Validators.required]],
+      categories: [[] as string[], [Validators.required, ManageVideo.arrayNotEmpty]],
+      duration: [0],
+      src: ['', [Validators.required]],
+      poster: ['', [Validators.required]],
+      published: [false],
+    });
+  }
+  ngOnInit(): void {
+    if (this.isEditMode) {
+      const video = this.data.video;
+      this.videoForm.patchValue({
+        title: video.title,
+        description: video.description,
+        year: video.year,
+        rating: video.rating,
+        categories: video.categories,
+        duration: video.duration,
+        src: this.extractUuidFromUrl(video.src),
+        poster: this.extractUuidFromUrl(video.poster),
+        published: video.published,
+      });
+      if (video.src) this.loadVideoPreview(video.src);
+      if (video.poster) this.loadPosterPreview(video.poster);
+    }
+  }
+
+  static arrayNotEmpty(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (!value || (Array.isArray(value) && value.length === 0)) {
+      return { required: true };
+    }
+    return null;
+  }
+
+  private loadVideoPreview(value: string | null): void {
+    this.videoPreviewUrl = this.mediaService.getMediaUrl(value, 'video');
+    this.videoLoading = false;
+    this.cdr.detectChanges();
+  }
+  private loadPosterPreview(value: string | null): void {
+    this.posterPreviewUrl = this.mediaService.getMediaUrl(value, 'image');
+    this.posterLoading = false;
+    this.cdr.detectChanges();
+  }
+
+  private extractUuidFromUrl(value: string | undefined | null): string {
+    if (!value) {
+      return '';
+    }
+    if (!value.includes('/')) {
+      return value;
+    }
+    const segments = value.split('/');
+    return segments[segments.length - 1] || '';
+  }
+
+  onVideoPicked(ev: Event) {
+    const file = (ev.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const validateVideoExtensions = [
+      '.mp4',
+      '.webm',
+      '.ogg',
+      '.mkv',
+      '.flv',
+      '.avi',
+      '.mov',
+      '.wmv',
+      '.m4v',
+      '.m2v',
+      '.m4b',
+      '.m4p',
+      '.m4r',
+      '.mxf',
+      '.roq',
+      '.swf',
+      '.vob',
+      '.f4v',
+      '.f4p',
+      '.f4a',
+      '.f4b',
+    ];
+    const fileName = file.name.toLowerCase();
+    const hasValidExtension = validateVideoExtensions.some((ext) => fileName.endsWith(ext));
+    const hasValidMimeType =
+      file.type.startsWith('video/') || file.type === 'application/octet-stream';
+    if (!hasValidExtension || !hasValidMimeType) {
+      this.notificationService.error('Invalid video file');
+      return;
+    }
+    const localBlobUrl = URL.createObjectURL(file);
+    this.videoPreviewUrl = localBlobUrl;
+    this.extractDurationFromFile(file);
+    this.uploadProgress = 0;
+    this.mediaService.uploadFile(file).subscribe({
+      next: ({ progress, uuid }) => {
+        this.uploadProgress = progress;
+        if (uuid) {
+          this.videoForm.patchValue({ src: uuid });
+          this.notificationService.success('Video uploaded successfully');
+        }
+      },
+      error: (err) => {
+        console.log(err);
+        this.notificationService.error('Error uploading video');
+        this.uploadProgress = 0;
+        if (this.videoPreviewUrl === localBlobUrl) {
+          URL.revokeObjectURL(localBlobUrl);
+          this.videoPreviewUrl = null;
+        }
+      },
+    });
+  }
+
+  onPosterPicked(ev: Event) {
+    const file = (ev.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      this.notificationService.error('Please insert a valid image file.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.posterPreviewUrl = reader.result as string;
+      this.cdr.detectChanges();
+      reader.readAsDataURL(file);
+    };
+    this.posterProgress = 0;
+    this.mediaService.uploadFile(file).subscribe({
+      next: ({ progress, uuid }) => {
+        this.posterProgress = progress;
+        if (uuid) {
+          this.videoForm.patchValue({ poster: uuid });
+          this.notificationService.success('Poster uploaded successfully');
+        }
+      },
+      error: (err) => {
+        this.notificationService.error('Error uploading poster', err);
+        this.uploadProgress = 0;
+        this.posterPreviewUrl = null;
+      },
+    });
+  }
+  private extractDurationFromFile(file: File) {
+    const videoElement = document.createElement('video');
+    videoElement.preload = 'metadata';
+    const blobUrl = URL.createObjectURL(file);
+    videoElement.src = blobUrl;
+    videoElement.onloadedmetadata = () => {
+      const duration = isFinite(videoElement.duration) ? Math.round(videoElement.duration) : 0;
+      this.videoForm.patchValue({ duration: duration });
+      URL.revokeObjectURL(blobUrl);
+    };
+    videoElement.onerror = (e) => {
+      console.error('Error loading video: ', e);
+      URL.revokeObjectURL(blobUrl);
+    };
+  }
+}
