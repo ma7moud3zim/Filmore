@@ -5,6 +5,7 @@ import { MediaService } from '../../../shared/services/media-service';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { AbstractControl, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { VideoService } from '../../../shared/services/video-service';
+import { ErrorHandlerService } from '../../../shared/services/error-handler-service';
 
 @Component({
   selector: 'app-manage-video',
@@ -30,6 +31,7 @@ export class ManageVideo implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private errorHandler: ErrorHandlerService,
     private videoService: VideoService,
     private notificationService: NotificationService,
     private cdr: ChangeDetectorRef,
@@ -200,5 +202,46 @@ export class ManageVideo implements OnInit {
       console.error('Error loading video: ', e);
       URL.revokeObjectURL(blobUrl);
     };
+  }
+
+  onSave() {
+    this.isSaving = true;
+    const formData = this.videoForm.value as Partial<any>;
+    const op$ = this.isEditMode
+      ? this.videoService.updateVideoByAdmin(this.data.video.id, formData)
+      : this.videoService.createVideoByAdmin(formData);
+
+    op$.subscribe({
+      next: (response: any) => {
+        this.isSaving = false;
+        this.notificationService.success(response.message || 'Video saved successfully');
+        this.dialogRef.close(null);
+      },
+      error: (err) => {
+        this.isSaving = false;
+        this.errorHandler.handle(err, 'Error saving video');
+      },
+    });
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
+  }
+
+  removeVideo() {
+    if (this.videoPreviewUrl && this.videoPreviewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(this.videoPreviewUrl);
+    }
+    this.videoPreviewUrl;
+    this.videoForm.patchValue({ src: '', duration: 0 });
+    this.uploadProgress = 0;
+  }
+  removePoster() {
+    if (this.posterPreviewUrl && this.posterPreviewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(this.posterPreviewUrl);
+    }
+    this.posterPreviewUrl = null;
+    this.videoForm.patchValue({ src: '', duration: 0 });
+    this.posterProgress = 0;
   }
 }
