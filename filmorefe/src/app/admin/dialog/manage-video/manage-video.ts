@@ -170,8 +170,9 @@ export class ManageVideo implements OnInit {
     reader.onload = () => {
       this.posterPreviewUrl = reader.result as string;
       this.cdr.detectChanges();
-      reader.readAsDataURL(file);
     };
+    reader.readAsDataURL(file);
+
     this.posterProgress = 0;
     this.mediaService.uploadFile(file).subscribe({
       next: ({ progress, uuid }) => {
@@ -183,7 +184,7 @@ export class ManageVideo implements OnInit {
       },
       error: (err) => {
         this.notificationService.error('Error uploading poster', err);
-        this.uploadProgress = 0;
+        this.posterProgress = 0;
         this.posterPreviewUrl = null;
       },
     });
