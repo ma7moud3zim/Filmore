@@ -181,4 +181,23 @@ export class VideoList implements OnInit {
       },
     });
   }
+
+  getPublishedCount(): number {
+    return this.publishedVideos;
+  }
+
+  getTotalDuration(): string {
+    const hours = Math.floor(this.totalDurationSeconds / 3600);
+    const mins = Math.floor((this.totalDurationSeconds % 3600) / 60);
+    if (hours > 0) return `${hours} + h ${mins}m`;
+    return `${mins}m`;
+  }
+
+  formatDuration(seconds: number): string {
+    return this.utilityService.formatDuration(seconds);
+  }
+
+  getPosterUrl(video: any) {
+    return this.mediaService.getMediaUrl(video, 'image', { userCache: true });
+  }
 }
