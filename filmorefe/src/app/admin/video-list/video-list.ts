@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { DialogService } from '../../shared/services/dialog-service';
 import { MatTableDataSource } from '@angular/material/table';
 import { NotificationService } from '../../shared/services/notification-service';
@@ -14,7 +14,7 @@ import { ErrorHandlerService } from '../../shared/services/error-handler-service
   styleUrl: './video-list.css',
 })
 export class VideoList implements OnInit {
-  pageVideos: any = [];
+  pagedVideos: any = [];
   loading = false;
   loadingMore = false;
   searchQuery = '';
@@ -37,6 +37,7 @@ export class VideoList implements OnInit {
     public utilityService: UtilityService,
     public mediaService: MediaService,
     private errorHandler: ErrorHandlerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -55,13 +56,13 @@ export class VideoList implements OnInit {
   load() {
     this.loading = true;
     this.currentPage = 0;
-    this.pageVideos = [];
+    this.pagedVideos = [];
     const search = this.searchQuery.trim() || undefined;
 
     this.videoService.getAllAdminVideos(this.currentPage, this.pageSize, search).subscribe({
       next: (response: any) => {
         this.loading = false;
-        this.pageVideos = response.content;
+        this.pagedVideos = response.content;
         this.totalPage = response.totalPages;
         this.totalElements = response.totalElements;
         this.hasMoreVideos = this.currentPage < this.totalPage - 1;
@@ -82,12 +83,14 @@ export class VideoList implements OnInit {
     this.videoService.getAllAdminVideos(nextPage, this.pageSize, search).subscribe({
       next: (response: any) => {
         this.loadingMore = false;
-        this.pageVideos = [...this.pageVideos, ...response.content];
+        this.currentPage = nextPage;
+        this.pagedVideos = [...this.pagedVideos, ...response.content];
         this.totalPage = response.totalPages;
         this.totalElements = response.totalElements;
         this.hasMoreVideos = this.currentPage < this.totalPage - 1;
         // this.data.data = this.pageVideos;
       },
+
       error: (error) => {
         this.loadingMore = false;
         this.errorHandler.handle(error, 'Error loading videos');
@@ -98,7 +101,7 @@ export class VideoList implements OnInit {
     this.videoService.getStatsByAdmin().subscribe((stats: any) => {
       this.totalVideos = stats.totalVideos;
       this.publishedVideos = stats.publishedVideos;
-      this.totalDurationSeconds = stats.totalDurationSeconds;
+      this.totalDurationSeconds = stats.totalDuration;
     });
   }
   onSearchChange(event: Event): void {
@@ -189,7 +192,7 @@ export class VideoList implements OnInit {
   getTotalDuration(): string {
     const hours = Math.floor(this.totalDurationSeconds / 3600);
     const mins = Math.floor((this.totalDurationSeconds % 3600) / 60);
-    if (hours > 0) return `${hours} + h ${mins}m`;
+    if (hours > 0) return `${hours}h ${mins}m`;
     return `${mins}m`;
   }
 
@@ -198,6 +201,7 @@ export class VideoList implements OnInit {
   }
 
   getPosterUrl(video: any) {
-    return this.mediaService.getMediaUrl(video, 'image', { userCache: true });
+    const url = this.mediaService.getMediaUrl(video, 'image', { useCache: true });
+    return url;
   }
 }

@@ -47,7 +47,7 @@ export class MediaService {
     mediaValue: any,
     type: 'image' | 'video',
     options?: {
-      userCache?: boolean;
+      useCache?: boolean;
     },
   ): string | null {
     let value = mediaValue;
@@ -60,11 +60,12 @@ export class MediaService {
     }
 
     let uuid = value;
-    if (value.includes('/${type}')) {
+
+    if (value.startsWith('http')) {
       uuid = value.substring(value.lastIndexOf('/') + 1);
     }
 
-    if (options?.userCache && type === 'image' && this.imageCache.has(uuid)) {
+    if (options?.useCache && type === 'image' && this.imageCache.has(uuid)) {
       return this.imageCache.get(uuid)!;
     }
     if (uuid.startsWith('blob:') || uuid.startsWith('data: ')) {
@@ -73,12 +74,12 @@ export class MediaService {
 
     const token = this.authService.getToken();
     if (!token) {
-      console.log('No token found for ${type} loading');
+      console.log(`No token found for ${type} loading`);
       return null;
     }
 
-    const authenticatedUrl = `${this.apiUrl}/${type}/${uuid}?token=${encodeURIComponent(token)}`;
-    if (options?.userCache && type === 'image') {
+    const authenticatedUrl = `${this.apiUrl}/${type}s/${uuid}?token=${encodeURIComponent(token)}`;
+    if (options?.useCache && type === 'image') {
       this.imageCache.set(uuid, authenticatedUrl);
     }
     return authenticatedUrl;

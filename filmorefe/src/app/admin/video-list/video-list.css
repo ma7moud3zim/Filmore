@@ -96,6 +96,7 @@
   border-radius: 8px;
   padding: 0 16px;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .search-wrapper:focus-within {
@@ -120,6 +121,12 @@
   font-size: 15px;
   padding: 14px 0;
   font-weight: 500;
+
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  border-radius: 0;
+  width: 100%;
 }
 
 .search-input::placeholder {
@@ -146,7 +153,6 @@
 
 /* Loading Bar */
 .loading-bar {
-  margin-bottom: 30px;
   height: 3px;
 }
 
