@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MediaService } from '../../services/media-service';
+import { UtilityService } from '../../services/utility-service';
 
 @Component({
   selector: 'app-video-player',
@@ -6,4 +9,268 @@ import { Component } from '@angular/core';
   templateUrl: './video-player.html',
   styleUrl: './video-player.css',
 })
-export class VideoPlayer {}
+export class VideoPlayer implements OnInit, OnDestroy {
+  @ViewChild('videoPlayer', { static: false }) videoElement!: ElementRef<HTMLVideoElement>;
+
+  isPlaying = false;
+  currentTime = 0;
+  duration = 0;
+  volume = 1;
+  isMuted = false;
+  isFullscreen = false;
+  showControls = true;
+  controlsTimout: any = null;
+  private boundFullScreenHandler: any;
+  private boundKeyDownHandler: any;
+  authenticatedVideoUrl: string | null = null;
+  constructor(
+    public dialogRef: MatDialogRef<VideoPlayer>,
+    @Inject(MAT_DIALOG_DATA) public video: any,
+    public utilityService: UtilityService,
+    private mediaService: MediaService,
+  ) {
+    this.boundFullScreenHandler = this.onFullscreenChange.bind(this);
+    this.boundKeyDownHandler = this.onKeyDown.bind(this);
+
+    this.loadAuthenticatedVideo();
+  }
+
+  ngOnInit() {
+    this.startControlsTimer();
+    document.addEventListener('fullscreenchange', this.boundFullScreenHandler);
+    document.addEventListener('keydown', this.boundKeyDownHandler);
+    this.dialogRef.beforeClosed().subscribe(() => {
+      this.cleanup();
+    });
+  }
+
+  ngOnDestroy() {
+    this.cleanup();
+  }
+  // Initilization & cleanup
+  private loadAuthenticatedVideo(): void {
+    this.authenticatedVideoUrl = this.mediaService.getMediaUrl(this.video.src, 'video');
+  }
+  private cleanup() {
+    if (this.controlsTimout) {
+      clearTimeout(this.controlsTimout);
+      this.controlsTimout = null;
+    }
+    document.removeEventListener('fullscreenchange', this.boundFullScreenHandler);
+    document.removeEventListener('keydown', this.boundKeyDownHandler);
+
+    if (this.videoElement?.nativeElement) {
+      const video = this.videoElement.nativeElement;
+      video.pause();
+      video.currentTime = 0;
+      video.src = '';
+      video.load();
+      this.isPlaying = false;
+    }
+  }
+
+  // event handler
+  onKeyDown(event: KeyboardEvent) {
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+    switch (event.key) {
+      case ' ':
+      case 'k':
+        event.preventDefault();
+        this.togglePlay();
+        break;
+      case 'arrowleft':
+        event.preventDefault();
+        this.seekBackward();
+        break;
+      case 'arrowright':
+        event.preventDefault();
+        this.seekForward();
+        break;
+      case 'm':
+        event.preventDefault();
+        this.toggleMute();
+        break;
+      case 'f':
+        event.preventDefault();
+        this.toggleFullscreen();
+        break;
+      case 'arrowUp':
+        event.preventDefault();
+        this.increaseVolume();
+        break;
+      case 'arrowDown':
+        event.preventDefault();
+        this.decreaseVolume();
+        break;
+      case 'escape':
+        if (document.fullscreenElement) {
+          event.preventDefault();
+          document.exitFullscreen();
+        } else {
+          this.closePlayer();
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  onFullscreenChange() {
+    this.isFullscreen = !!document.fullscreenElement;
+  }
+
+  onLoadedMetadata() {
+    if (this.videoElement?.nativeElement) {
+      this.duration = this.videoElement.nativeElement.duration;
+    }
+  }
+
+  onTimeUpdate() {
+    if (this.videoElement?.nativeElement) {
+      this.currentTime = this.videoElement.nativeElement.currentTime;
+    }
+  }
+
+  onMouseMove() {
+    this.showControls = true;
+    this.startControlsTimer();
+  }
+
+  onVideoClick() {
+    this.togglePlay();
+  }
+
+  onProgressClick(event: MouseEvent) {
+    if (!this.videoElement?.nativeElement || !this.duration) return;
+    const progressBar = event.currentTarget as HTMLElement;
+    const rect = progressBar.getBoundingClientRect();
+    const pos = (event.clientX - rect.left) / rect.width;
+    const newTime = pos * this.duration;
+    this.videoElement.nativeElement.currentTime = newTime;
+    this.currentTime = newTime;
+  }
+
+  // Video Playback Controls
+  togglePlay() {
+    if (!this.videoElement?.nativeElement) return;
+    const video = this.videoElement.nativeElement;
+    this.pauseAllOtherVideos(video);
+    if (video.paused) {
+      video
+        .play()
+        .then(() => {
+          this.isPlaying = true;
+        })
+        .catch((err) => {
+          console.error('Play error:', err);
+          this.isPlaying = false;
+        });
+    } else {
+      video.pause();
+      this.isPlaying = false;
+    }
+  }
+  private pauseAllOtherVideos(currentVideo: HTMLVideoElement) {
+    const allVideos = document.querySelectorAll('video');
+    allVideos?.forEach((video: HTMLVideoElement) => {
+      if (video !== currentVideo && !video.paused) {
+        video.pause();
+      }
+    });
+  }
+
+  seekForward() {
+    if (!this.videoElement?.nativeElement) return;
+    const video = this.videoElement.nativeElement;
+    video.currentTime = Math.min(video.duration, video.currentTime + 10);
+  }
+  seekBackward() {
+    if (!this.videoElement?.nativeElement) return;
+    const video = this.videoElement.nativeElement;
+    video.currentTime = Math.max(0, video.currentTime - 10);
+  }
+
+  // Volume Controls
+
+  toggleMute() {
+    if (!this.videoElement?.nativeElement) return;
+    const video = this.videoElement.nativeElement;
+    video.muted = !video.muted;
+    this.isMuted = video.muted;
+  }
+
+  changeVolume(event: Event) {
+    if (!this.videoElement?.nativeElement) return;
+    const target = event.target as HTMLInputElement;
+    const value = parseFloat(target.value);
+    this.setVolume(value);
+    this.isMuted;
+  }
+
+  increaseVolume() {
+    if (!this.videoElement?.nativeElement) return;
+    const newVolume = Math.min(this.volume + 0.1, 1);
+    this.setVolume(newVolume);
+    this.isMuted = false;
+    this.videoElement.nativeElement.muted = false;
+  }
+
+  decreaseVolume() {
+    if (!this.videoElement?.nativeElement) return;
+    const newVolume = Math.max(this.volume - 0.1, 0);
+    this.setVolume(newVolume);
+    this.isMuted = newVolume === 0;
+  }
+  private setVolume(value: number) {
+    if (!this.videoElement?.nativeElement) return;
+    const video = this.videoElement.nativeElement;
+    video.volume = value;
+    this.volume = value;
+  }
+
+  // Fullscreen Controls
+  toggleFullscreen() {
+    const container = document.querySelector('.player-container');
+    if (!document.fullscreenElement) {
+      container?.requestFullscreen();
+      this.isFullscreen = true;
+    } else {
+      document.exitFullscreen();
+      this.isFullscreen = false;
+    }
+  }
+
+  // UI controls
+  startControlsTimer() {
+    if (this.controlsTimout) {
+      clearTimeout(this.controlsTimout);
+    }
+    this.controlsTimout = setTimeout(() => {
+      if (this.isPlaying) {
+        this.showControls = false;
+      }
+    }, 3000);
+  }
+
+  closePlayer() {
+    this.dialogRef.close();
+  }
+
+  // utility methods
+  formatTime(seconds: number): string {
+    return this.utilityService.formatDuration(seconds);
+  }
+
+  get videoSrc(): string | null {
+    return this.authenticatedVideoUrl;
+  }
+
+  get progressPercent(): number {
+    return this.duration ? (this.currentTime / this.duration) * 100 : 0;
+  }
+
+  get VolumePercent(): number {
+    return (this.volume * 100) / 1;
+  }
+}
