@@ -270,7 +270,7 @@ export class VideoPlayer implements OnInit, OnDestroy {
     return this.duration ? (this.currentTime / this.duration) * 100 : 0;
   }
 
-  get VolumePercent(): number {
+  get volumePercent(): number {
     return (this.volume * 100) / 1;
   }
 }
