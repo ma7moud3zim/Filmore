@@ -23,7 +23,7 @@ const routes: Routes = [
     loadChildren: () => import('../app/admin/admin-module').then((m) => m.AdminModule),
     canActivate: [adminGuard],
   },
-  { path: '**', redirectTo: '', pathMatch: 'full' },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({
