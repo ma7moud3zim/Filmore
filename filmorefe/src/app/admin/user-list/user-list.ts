@@ -167,4 +167,42 @@ export class UserList implements OnInit {
         }
       });
   }
+
+  changeUserRole(user: any) {
+    const newRole = user.role === 'ADMIN' ? 'USER' : 'ADMIN';
+    this.dialogService
+      .openConfirmation(
+        'Change User Role',
+        `Are you sure you want to change the role of "${user.name}" to "${newRole}"?`,
+        'Change Role',
+        'Cancel',
+        'warning',
+      )
+      .subscribe((response) => {
+        if (response) {
+          this.userService.changeUserRole(user.id, newRole).subscribe({
+            next: () => {
+              this.notification.success(`User role changed to ${newRole} successfully`);
+              this.loadUsers();
+            },
+            error: (error) => {
+              this.errorHandler.handle(error, 'Failed to change user role');
+            },
+          });
+        }
+      });
+  }
+
+  getRoleBadgeClass(role: string): string {
+    return role === 'ADMIN' ? 'role-badge admin' : 'role-badge user';
+  }
+
+  getStatusBadgeClass(active: boolean): string {
+    return active ? 'status-badge active' : 'status-badge inactive';
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-us', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
 }

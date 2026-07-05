@@ -22,7 +22,7 @@ export class DialogService {
     message: string,
     confirmText: string,
     cancelText: string,
-    type: 'warning' | 'danger' | 'infor' = 'warning',
+    type: 'warning' | 'danger' | 'info' = 'warning',
   ): Observable<boolean> {
     const dialogRef = this.dialog.open(ConfirmDialog, {
       ...DIALOG_CONFIG.CONFIRM,
