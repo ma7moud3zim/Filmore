@@ -34,7 +34,7 @@ export class UserList implements OnInit {
 
   ngOnInit() {
     const currentUser = this.authService.getCurrentUser();
-    this.currentUserEmail = currentUser ? currentUser.email : null;
+    this.currentUserEmail = currentUser?.email || null;
     this.loadUsers();
   }
 
@@ -85,15 +85,15 @@ export class UserList implements OnInit {
         this.loadingMore = false;
       },
       error: (error) => {
-        this.errorHandler.handle(error, 'Failed loading more users');
         this.loadingMore = false;
+        this.errorHandler.handle(error, 'Failed loading more users');
       },
     });
   }
 
   onSearchChange(event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    this.searchQuery = inputElement.value;
+    const input = event.target as HTMLInputElement;
+    this.searchQuery = input.value;
     this.currentPage = 0;
     this.loadUsers();
   }

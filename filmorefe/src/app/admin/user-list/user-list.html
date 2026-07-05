@@ -1,1 +1,92 @@
-<p>user-list works!</p>
+<div class="user-management-continaer">
+  <div class="header-section">
+    <div class="title-wrapper">
+      <h1 class="page-title">User Management</h1>
+      <p class="page-subtitle">Manage user accounts and permissions</p>
+    </div>
+
+    <div class="header-actions">
+      <button mat-raised-button color="accent" (click)="createUser()" class="create-btn">
+        <mat-icon>person_add</mat-icon>
+        Add New User
+      </button>
+      <button
+        mat-icon-button
+        (click)="loadUsers()"
+        [disabled]="loading"
+        class="refresh-btn"
+        matTooltip="Refresh"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="search-section">
+    <div class="search-wrapper">
+      <mat-icon class="search-icon"> search</mat-icon>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search users..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearchChange($event)"
+      />
+      <button *ngIf="searchQuery" mat-icon-button class="clear-btn" (click)="clearSearch()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="search-info">
+      <span *ngIf="!loading"> Showing {{ paginatedUsers.length }} of {{ totalUsers }} users</span>
+    </div>
+  </div>
+
+  <mat-progress-bar *ngIf="loading" mode="indeterminate" color="accent"></mat-progress-bar>
+
+  <div *ngIf="error && !loading" class="error-message">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h2>Oops! something went wrong!</h2>
+    <p>{{ error }}</p>
+    <button mat-raised-button color="primary" (click)="loadUsers()">
+      <mat-icon>refresh</mat-icon>
+      Retry
+    </button>
+  </div>
+
+  <div *ngIf="!loading && !error && paginatedUsers.length > 0" class="users-grid">
+    <div
+      *ngFor="let user of paginatedUsers"
+      class="user-card"
+      [class.current-user]="isCurrentUser(user)"
+    >
+      <div class="user-card-header">
+        <div class="user-avatar">
+          <mat-icon>person</mat-icon>
+        </div>
+        <div class="user-info">
+          <h3 class="user-name">
+            {{ user.fullName }}
+            <span *ngIf="isCurrentUser(user)" class="you-badge"> YOU</span>
+          </h3>
+          <p class="user-email">{{ user.email }}</p>
+        </div>
+      </div>
+
+      <div class="user-card-body">
+        <div class="user-meta">
+          <div class="meta-item">
+            <span class="meta-label"> Role</span>
+
+            <span [class]="getRoleBadgeClass(user.role)">
+              <mat-icon class="badge-icon">
+                {{ user.role === 'ADMIN' ? 'admin_panel_settings' : 'person' }}
+              </mat-icon>
+              {{ user.role }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
