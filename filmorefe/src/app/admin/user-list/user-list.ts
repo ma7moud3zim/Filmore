@@ -18,7 +18,7 @@ export class UserList implements OnInit {
   error = false;
   currentUserEmail: string | null = null;
   searchQuery: string = '';
-  pageSize = 10;
+  pageSize = 4;
   currentPage = 0;
   totalPage = 0;
   totalUsers = 0;
