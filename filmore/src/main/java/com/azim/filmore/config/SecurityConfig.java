@@ -31,7 +31,9 @@ public class SecurityConfig {
 			"/api/auth/verify-email",
 			"/api/auth/resend-verification",
 			"/api/auth/forget-password",
-			"/api/auth/reset-password"
+			"/api/auth/reset-password",
+			"/api/files/images/**",
+			"/api/files/videos/**"
 	};
 	
 	@Bean
