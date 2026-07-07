@@ -175,10 +175,15 @@ export class VideoList implements OnInit {
         this.notification.success(
           `Video ${video.published ? 'published' : 'unpublished'} successfully`,
         );
-        this.load();
+        if (newPublishedState) {
+          this.publishedVideos++;
+        } else {
+          this.publishedVideos--;
+        }
         this.loadStats();
       },
       error: (error) => {
+        event.source.checked = !newPublishedState;
         video.published = !newPublishedState;
         this.errorHandler.handle(error, 'Error updating video published state, Please try again.');
       },

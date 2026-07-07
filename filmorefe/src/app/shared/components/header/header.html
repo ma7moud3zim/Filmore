@@ -17,11 +17,11 @@
           </a>
         </nav>
         <nav class="nav" *ngIf="!isAdminMode">
-          <a mat-button routerLink="/user/home" rotuerLinkActive="active" class="nav-link">
+          <a mat-button routerLink="/home" routerLinkActive="active" class="nav-link">
             <mat-icon>home</mat-icon>
             <span>Home</span>
           </a>
-          <a mat-button routerLink="/user/my-fav" routerLinkActive="active" class="nav-link">
+          <a mat-button routerLink="/my-fav" routerLinkActive="active" class="nav-link">
             <mat-icon>favorite</mat-icon>
             <span>My Favorites</span>
           </a>
@@ -72,7 +72,7 @@
 <ng-container *ngIf="showRouterOutlet">
   <div class="app-header">
     <ng-container *ngTemplateOutlet="headerBar"></ng-container>
-    <main cass="main-content">
+    <main class="main-content">
       <router-outlet></router-outlet>
     </main>
   </div>

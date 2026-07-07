@@ -31,7 +31,9 @@ export class VideoService {
   }
 
   setPublishedByAdmin(id: string | number, published: boolean) {
-    return this.http.patch(this.apiUrlAdmin + '/' + id, '/publishe?value=' + published, {});
+    const url = `${this.apiUrlAdmin}/${id}/publish`;
+    const params = new HttpParams().set('value', published);
+    return this.http.patch(url, {}, { params });
   }
 
   getStatsByAdmin() {
