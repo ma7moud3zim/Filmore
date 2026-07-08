@@ -195,7 +195,7 @@ export class Home implements OnInit, OnDestroy {
     this.savedScrollPosition = 0;
     this.loadMoreVideos();
   }
-  isInWatchList(video: any): boolean {
+  isInWatchlist(video: any): boolean {
     return video.isInWatchlist === true;
   }
 
@@ -205,7 +205,7 @@ export class Home implements OnInit, OnDestroy {
     }
 
     const videoId = video.id!;
-    const isInList = this.isInWatchList(video);
+    const isInList = this.isInWatchlist(video);
 
     if (isInList) {
       video.isInWatchlist = false;
