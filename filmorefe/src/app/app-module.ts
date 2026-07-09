@@ -20,6 +20,7 @@ import { ForgotPassword } from './forgot-password/forgot-password';
 import { AuthService } from './shared/services/auth-service';
 import { ResetPassword } from './reset-password/reset-password';
 import { MyFavorites } from './user/my-favorites/my-favorites';
+import { A11yModule } from '@angular/cdk/a11y';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,7 @@ import { MyFavorites } from './user/my-favorites/my-favorites';
     ResetPassword,
     MyFavorites,
   ],
-  imports: [BrowserModule, AppRoutingModule, SharedModule],
+  imports: [BrowserModule, AppRoutingModule, SharedModule, A11yModule],
   providers: [
     provideAppInitializer(() => {
       const auth = inject(AuthService);
