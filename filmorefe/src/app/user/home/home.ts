@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { WatchlistService } from '../../shared/services/watchlist-service';
 import { VideoService } from '../../shared/services/video-service';
@@ -44,6 +44,7 @@ export class Home implements OnInit, OnDestroy {
     public mediaService: MediaService,
     public dialogService: DialogService,
     private errorHandler: ErrorHandlerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -71,10 +72,12 @@ export class Home implements OnInit, OnDestroy {
         if (this.featuredVideos.length > 0) {
           this.startSlider();
         }
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.featuredLoading = false;
         this.errorHandler.handle(err, 'Error loading featured videos');
+        this.cdr.markForCheck();
       },
     });
   }
@@ -137,6 +140,7 @@ export class Home implements OnInit, OnDestroy {
         this.totalPages = response.totalPages;
         this.hasMoreVideos = this.currentPage < this.totalPages - 1;
         this.loading = false;
+        this.cdr.markForCheck();
 
         if (isSearching && this.allVideos.length === 0) {
           setTimeout(() => {
@@ -151,6 +155,7 @@ export class Home implements OnInit, OnDestroy {
         this.savedScrollPosition = 0;
         this.errorHandler.handle(error, 'Error loading videos');
         console.error('Error loading videos:', error);
+        this.cdr.markForCheck();
       },
     });
   }
@@ -169,12 +174,14 @@ export class Home implements OnInit, OnDestroy {
         this.totalPages = response.totalPages;
         this.totalElements = response.totalElements;
         this.hasMoreVideos = this.currentPage < this.totalPages - 1;
+        this.cdr.markForCheck();
       },
 
       error: (error) => {
         this.notification.error('Error loading videos');
         this.loadingMore = false;
         this.errorHandler.handle(error, 'Error loading videos');
+        this.cdr.markForCheck();
       },
     });
   }

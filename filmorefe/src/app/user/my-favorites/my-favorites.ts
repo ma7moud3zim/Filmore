@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { VideoService } from '../../shared/services/video-service';
 import { WatchlistService } from '../../shared/services/watchlist-service';
@@ -38,6 +38,7 @@ export class MyFavorites implements OnInit, OnDestroy {
     public mediaService: MediaService,
     public dialogService: DialogService,
     private errorHandler: ErrorHandlerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -80,12 +81,14 @@ export class MyFavorites implements OnInit, OnDestroy {
         this.totalPages = response.totalPages;
         this.hasMoreVideos = this.currentPage < this.totalPages - 1;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.error = true;
         this.loadingMore = false;
         this.errorHandler.handle(error, 'Error loading videos');
         console.error('Error loading videos:', error);
+        this.cdr.markForCheck();
       },
     });
   }
@@ -104,12 +107,14 @@ export class MyFavorites implements OnInit, OnDestroy {
         this.totalPages = response.totalPages;
         this.totalElements = response.totalElements;
         this.hasMoreVideos = this.currentPage < this.totalPages - 1;
+        this.cdr.markForCheck();
       },
 
       error: (error) => {
         this.notification.error('Error loading videos');
         this.loadingMore = false;
         this.errorHandler.handle(error, 'Error loading videos');
+        this.cdr.markForCheck();
       },
     });
   }

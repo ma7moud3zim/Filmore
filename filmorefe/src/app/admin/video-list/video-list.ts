@@ -67,10 +67,12 @@ export class VideoList implements OnInit {
         this.totalElements = response.totalElements;
         this.hasMoreVideos = this.currentPage < this.totalPage - 1;
         // this.data.data = this.pageVideos;
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.loadingMore = false;
         this.errorHandler.handle(error, 'Error loading videos');
+        this.cdr.markForCheck();
       },
     });
   }
@@ -89,11 +91,13 @@ export class VideoList implements OnInit {
         this.totalElements = response.totalElements;
         this.hasMoreVideos = this.currentPage < this.totalPage - 1;
         // this.data.data = this.pageVideos;
+        this.cdr.markForCheck();
       },
 
       error: (error) => {
         this.loadingMore = false;
         this.errorHandler.handle(error, 'Error loading videos');
+        this.cdr.markForCheck();
       },
     });
   }

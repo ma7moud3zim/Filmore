@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
 import { UserService } from '../../shared/services/user-service';
 import { DialogService } from '../../shared/services/dialog-service';
 import { AuthService } from '../../shared/services/auth-service';
@@ -30,6 +30,7 @@ export class UserList implements OnInit {
     private dialogService: DialogService,
     private notification: NotificationService,
     private errorHandler: ErrorHandlerService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -62,11 +63,13 @@ export class UserList implements OnInit {
         this.currentPage = response.number;
         this.hasMoreUsers = this.currentPage < this.totalPage - 1;
         this.loading = false;
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.error = true;
         this.loadingMore = false;
         this.errorHandler.handle(error, 'Error loading users');
+        this.cdr.markForCheck();
       },
     });
   }
@@ -83,10 +86,12 @@ export class UserList implements OnInit {
         this.currentPage = response.number;
         this.hasMoreUsers = this.currentPage < this.totalPage - 1;
         this.loadingMore = false;
+        this.cdr.markForCheck();
       },
       error: (error) => {
         this.loadingMore = false;
         this.errorHandler.handle(error, 'Failed loading more users');
+        this.cdr.markForCheck();
       },
     });
   }
