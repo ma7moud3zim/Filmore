@@ -20,7 +20,7 @@ export class WatchlistService {
   }
 
   addToWatchlist(videoId: number | string) {
-    return this.http.post(this.apiUrl + '/', videoId, {});
+    return this.http.post(this.apiUrl + '/' + videoId, {});
   }
 
   removeFromWatchlist(videoId: number | string) {

@@ -16,6 +16,8 @@ import com.azim.filmore.service.WatchlistService;
 import com.azim.filmore.util.PaginationUtils;
 import com.azim.filmore.util.ServiceUtils;
 
+import jakarta.transaction.Transactional;
+
 
 @Service
 public class WatchlistServiceImpl implements WatchlistService {
@@ -32,6 +34,7 @@ public class WatchlistServiceImpl implements WatchlistService {
 	
 	
 	@Override
+	@Transactional
 	public MessageResponse addToWatchlist(Long videoId, String email) {
 		User user = serviceUtils.getUserByEmailOrThrow(email);
 		Video video = serviceUtils.getVideoByIdOrThrow(videoId);
@@ -43,6 +46,7 @@ public class WatchlistServiceImpl implements WatchlistService {
 
 
 	@Override
+	@Transactional
 	public MessageResponse removeFromWatchlist(Long videoId, String email) {
 		User user = serviceUtils.getUserByEmailOrThrow(email);
 		Video video = serviceUtils.getVideoByIdOrThrow(videoId);
