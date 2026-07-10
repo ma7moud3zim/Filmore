@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -66,7 +67,7 @@ public class Video {
 	@Column(nullable =false, updatable=false)
 	private Instant createdAt;
 	
-	@CreationTimestamp
+	@UpdateTimestamp
 	@Column(nullable =false)
 	private Instant updatedAt;	
 	

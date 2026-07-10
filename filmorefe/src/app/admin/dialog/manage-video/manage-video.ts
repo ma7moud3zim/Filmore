@@ -68,6 +68,7 @@ export class ManageVideo implements OnInit {
       });
       if (video.src) this.loadVideoPreview(video.src);
       if (video.poster) this.loadPosterPreview(video.poster);
+      this.cdr.detectChanges();
     }
   }
 
