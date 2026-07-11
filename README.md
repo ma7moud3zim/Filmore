@@ -25,13 +25,14 @@ Built with **Spring Boot** (REST API) and **Angular** (SPA), Filmore lets users 
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
 - [Project Structure](#-project-structure)
+- [The Database Scheme](#-the-database-scheme)
 - [Getting Started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Backend Setup](#backend-setup-filmore)
   - [Frontend Setup](#frontend-setup-filmorefe)
 - [Environment Variables](#-environment-variables)
 - [API Overview](#-api-overview)
-- [Screenshots](#-screenshots)
+- [Screens](#screens)
 - [Contributing](#-contributing)
 ---
 
@@ -87,6 +88,12 @@ The project was built to practice designing a production-style architecture: sec
 - Angular Material (dialogs, snackbars, etc.)
 - RxJS
 - SCSS / CSS
+
+---
+
+## 🗄 The Database Scheme
+
+<img width="926" height="852" alt="image" src="https://github.com/user-attachments/assets/836157c5-8eee-41a8-b177-5e498895c12e" />
 
 ---
 
@@ -234,7 +241,7 @@ All endpoints are prefixed with `/api`. Most endpoints require a valid JWT in th
 
 ---
 
-## 🖼️ Screenshots
+## Screens
 
 **Landing Page:** The page that comes to unlogged user in the first visit for the site.
 <img width="1911" height="1200" alt="image" src="https://github.com/user-attachments/assets/116932b9-2237-4b36-a26b-712ab0cbd972" />
