@@ -10,9 +10,9 @@
 Built with **Spring Boot** (REST API) and **Angular** (SPA), Filmore lets users browse a video library, search and filter content, manage a personal watchlist, and — for admins — manage videos and users through a dedicated admin panel.
 
 [![Java](https://img.shields.io/badge/Java-17%2B-orange?logo=openjdk)](https://openjdk.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-6DB33F?logo=springboot)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-6DB33F?logo=springboot)](https://spring.io/projects/spring-boot)
 [![Angular](https://img.shields.io/badge/Angular-21-DD0031?logo=angular)](https://angular.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 
 </div>
